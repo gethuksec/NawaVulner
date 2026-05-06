@@ -1,0 +1,12 @@
+# Salin ke `docker-compose.override.yml` untuk dev (file override tidak wajib di-commit — lihat README).
+# Contoh: API hot reload + mount source (node_modules tetap dari image).
+services:
+  nawa-api:
+    build:
+      context: ./dashboard/api
+      dockerfile: Dockerfile.dev
+    command: ["npm", "run", "dev"]
+    volumes:
+      - ./dashboard/api/src:/app/src
+    environment:
+      NODE_ENV: development

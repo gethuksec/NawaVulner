@@ -1,0 +1,61 @@
+# --- Dependencies ---
+node_modules/
+**/node_modules/
+
+# --- Build outputs ---
+dist/
+build/
+**/dist/
+**/build/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# --- Vite / tooling caches ---
+.vite/
+**/.vite/
+.cache/
+.parcel-cache/
+.eslintcache
+
+# --- Environment & secrets (keep .env.example tracked) ---
+.env
+.env.*
+!.env.example
+
+# --- Docker (local overrides; never commit secrets here) ---
+docker-compose.override.yml
+
+# --- Logs & debug ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# --- Test & coverage ---
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+**/coverage/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- Editors ---
+.idea/
+
+# --- Misc ---
+*.orig
+*.rej
+*.swp
+*.swo
+*~
+tmp/
+temp/

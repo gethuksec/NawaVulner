@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Portal Layanan Mandiri — Kota Sariwangi</title>
+    <style>
+      :root {
+        --bg: #f4f7f5;
+        --card: #ffffff;
+        --primary: #0d5c4d;
+        --primary-light: #e8f3f0;
+        --accent: #c45c26;
+        --text: #1c2b28;
+        --muted: #5a6f6a;
+        --border: #c5d4ce;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.55;
+      }
+      header {
+        background: linear-gradient(105deg, var(--primary) 0%, #0a4a3e 100%);
+        color: #fff;
+        padding: 1.25rem 1.5rem;
+        box-shadow: 0 2px 12px rgba(13, 92, 77, 0.25);
+      }
+      header h1 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      header p {
+        margin: 0.35rem 0 0;
+        opacity: 0.9;
+        font-size: 0.85rem;
+      }
+      main {
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 1.75rem 1.25rem 3rem;
+      }
+      .banner {
+        background: var(--primary-light);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 1rem 1.1rem;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+      .banner strong {
+        color: var(--primary);
+      }
+      section.card {
+        margin-top: 1.5rem;
+        background: var(--card);
+        border-radius: 0.5rem;
+        border: 1px solid var(--border);
+        padding: 1.25rem 1.35rem;
+        box-shadow: 0 4px 20px rgba(28, 43, 40, 0.06);
+      }
+      section.card h2 {
+        margin: 0 0 0.75rem;
+        font-size: 1.05rem;
+        color: var(--primary);
+      }
+      .ticket {
+        font-family: ui-monospace, monospace;
+        background: #f0f4f2;
+        padding: 0.2rem 0.45rem;
+        border-radius: 0.25rem;
+        font-size: 0.88rem;
+      }
+      .hint {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px dashed var(--border);
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      footer {
+        margin-top: 2rem;
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+      footer a {
+        color: var(--accent);
+      }
+      .en {
+        margin-top: 0.75rem;
+        font-size: 0.8rem;
+        color: var(--muted);
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Portal Layanan Mandiri</h1>
+      <p>Pemerintah Kota Sariwangi — perizinan &amp; status berkas (lingkungan latihan)</p>
+    </header>
+    <main>
+      <div class="banner">
+        <strong>Untuk peserta lab:</strong> aplikasi ini menyimulasikan layanan mandiri warga. Temukan cara
+        parameter identitas mengontrol data profil yang ditampilkan — celah klasifikasi
+        <strong>OWASP A01:2025 Broken Access Control (IDOR)</strong>.
+      </div>
+
+      <section class="card" aria-labelledby="ctx-title">
+        <h2 id="ctx-title">Konteks studi kasus</h2>
+        <p>
+          Warga membuka tautan dari email notifikasi: <span class="ticket">/pemohon/profil?id=1024</span> (contoh).
+          Backend mengembalikan JSON atau HTML profil berdasarkan nilai <code>id</code> tanpa memverifikasi bahwa
+          pengguna yang sedang masuk berhak melihat pemohon tersebut.
+        </p>
+        <p class="en">
+          Fictional self-service portal: profile pages are keyed by predictable identifiers. Explore how the
+          server decides which applicant record to return.
+        </p>
+        <div class="hint">
+          Flag valid diverifikasi oleh <strong>platform NawaVulner</strong>, bukan oleh halaman statis ini.
+          Gunakan aplikasi vulnerable sesungguhnya saat modul ini diperluas; untuk saat ini fokus pada narasi &
+          reconnaissance surface.
+        </div>
+      </section>
+
+      <footer>
+        <a href="/health">GET /health</a> (JSON) — orkestrasi lab.
+      </footer>
+    </main>
+  </body>
+</html>

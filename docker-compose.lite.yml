@@ -1,0 +1,43 @@
+# Stack ringan: hanya DB + API (tanpa dashboard statis, proxy, lab bundle).
+# Uji API / seed / integrasi dari host: `docker compose -f docker-compose.lite.yml up -d --build`
+# Health: `curl http://localhost:${API_PORT:-3001}/api/v1/health`
+services:
+  nawa-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nawa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nawa_dev_change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-nawavulner}
+    volumes:
+      - nawa_pg_lite:/var/lib/postgresql/data
+      - ./dashboard/api/db/init.sql:/docker-entrypoint-initdb.d/01-nawa-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nawa -d nawavulner"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  nawa-api:
+    build:
+      context: ./dashboard/api
+      dockerfile: Dockerfile
+    ports:
+      - "${API_PORT:-3001}:3001"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://nawa:nawa_dev_change_me@nawa-db:5432/nawavulner}
+      SESSION_SECRET: ${SESSION_SECRET:-dev_session_secret_change_in_prod_min_32}
+      PEPPER_FLAG: ${PEPPER_FLAG:-dev_pepper_change_me}
+      FIRST_BLOOD_BONUS_POINTS: ${FIRST_BLOOD_BONUS_POINTS:-50}
+      CHALLENGE_UNLOCK_MODE: ${CHALLENGE_UNLOCK_MODE:-free}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://127.0.0.1:3001}
+      LAB_DEPLOYED_SLUGS: ${LAB_DEPLOYED_SLUGS:-}
+      NODE_ENV: production
+      LISTEN_HOST: 0.0.0.0
+    depends_on:
+      nawa-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  nawa_pg_lite:

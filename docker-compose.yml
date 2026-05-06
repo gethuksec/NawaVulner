@@ -1,0 +1,73 @@
+services:
+  nawa-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nawa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nawa_dev_change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-nawavulner}
+    volumes:
+      - nawa_pg_data:/var/lib/postgresql/data
+      - ./dashboard/api/db/init.sql:/docker-entrypoint-initdb.d/01-nawa-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nawa -d nawavulner"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  challenge-phase1-bundle:
+    build:
+      context: ./challenges/phase1-bundle
+      dockerfile: Dockerfile
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-node:20-alpine}
+    expose:
+      - "8080"
+    restart: unless-stopped
+
+  nawa-api:
+    build:
+      context: ./dashboard/api
+      dockerfile: Dockerfile
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-node:20-alpine}
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://nawa:nawa_dev_change_me@nawa-db:5432/nawavulner}
+      SESSION_SECRET: ${SESSION_SECRET:-dev_session_secret_change_in_prod_min_32}
+      PEPPER_FLAG: ${PEPPER_FLAG:-dev_pepper_change_me}
+      FIRST_BLOOD_BONUS_POINTS: ${FIRST_BLOOD_BONUS_POINTS:-50}
+      CHALLENGE_UNLOCK_MODE: ${CHALLENGE_UNLOCK_MODE:-free}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8080}
+      LAB_DEPLOYED_SLUGS: ${LAB_DEPLOYED_SLUGS:-a01-idor-profil-user,a01-force-browse-admin,a01-jwt-privilege-escalation,a01-ssrf-internal-discovery,a01-csrf-cors-chain,a01-mass-assignment-hpe,a02-default-or-hardcoded-credentials,a02-directory-listing,a02-verbose-errors,a02-missing-security-headers,a02-cloud-metadata-ssrf,a02-debug-endpoint-leak,a05-sqli-login-bypass,a05-reflected-xss,a05-sqli-union,a05-stored-xss-cookie-steal,a05-sqli-blind-time,a05-ssti-rce}
+      NODE_ENV: production
+    depends_on:
+      nawa-db:
+        condition: service_healthy
+    expose:
+      - "3001"
+    restart: unless-stopped
+
+  nawa-dashboard:
+    build:
+      context: ./dashboard/frontend
+      dockerfile: Dockerfile
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-node:20-alpine}
+    expose:
+      - "80"
+    restart: unless-stopped
+
+  nawa-proxy:
+    image: nginx:1.26-alpine
+    ports:
+      - "${PUBLIC_PORT:-8080}:80"
+    volumes:
+      - ./nginx/nawa-proxy.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - nawa-api
+      - nawa-dashboard
+      - challenge-phase1-bundle
+    restart: unless-stopped
+
+volumes:
+  nawa_pg_data:
