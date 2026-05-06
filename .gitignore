@@ -19,15 +19,15 @@ out/
 .parcel-cache/
 .eslintcache
 
-# --- Environment & secrets (keep .env.example tracked) ---
+# --- Environment & secrets ---
 .env
 .env.*
 !.env.example
 
-# --- Docker (local overrides; never commit secrets here) ---
+# --- Docker local ---
 docker-compose.override.yml
 
-# --- Logs & debug ---
+# --- Logs ---
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -35,12 +35,13 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# --- Test & coverage ---
+# --- Tests & coverage ---
 coverage/
 .nyc_output/
 playwright-report/
 test-results/
 **/coverage/
+*.lcov
 
 # --- OS ---
 .DS_Store
@@ -50,6 +51,25 @@ Desktop.ini
 
 # --- Editors ---
 .idea/
+*.sublime-*
+
+# --- Dokumentasi & perencanaan (tidak dipakai runtime deploy Compose) ---
+/prd/
+/sdd/
+/docs/
+/CONTRIBUTING.md
+
+# --- Cursor / MCP cache proyek (lokal) ---
+.cursor/
+mcps/
+
+# --- Python / Ruby / IaC (jika ada skrip tooling) ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.terraform/
+*.tfstate*
 
 # --- Misc ---
 *.orig
@@ -59,3 +79,5 @@ Desktop.ini
 *~
 tmp/
 temp/
+*.pem
+*.p12
