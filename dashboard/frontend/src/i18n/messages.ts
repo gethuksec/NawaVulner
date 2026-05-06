@@ -72,6 +72,8 @@ export type MessageId =
   | "dashboard.loadFailed"
   | "dashboard.modulePercent"
   | "dashboard.navAria"
+  | "dashboard.challengeLockedCard"
+  | "dashboard.challengeLockedCardAria"
   | "challenge.backToList"
   | "challenge.vulnTitle"
   | "challenge.vulnBlurbId"
@@ -205,6 +207,8 @@ const M: Record<UiLang, Record<MessageId, string>> = {
     "dashboard.loadFailed": "Gagal memuat data",
     "dashboard.modulePercent": "{{pct}}% selesai",
     "dashboard.navAria": "Navigasi dashboard",
+    "dashboard.challengeLockedCard": "Belum dibuka",
+    "dashboard.challengeLockedCardAria": "Challenge terkunci — modul ini belum tersedia.",
     "challenge.backToList": "← Kembali ke daftar",
     "challenge.vulnTitle": "Apa celah ini?",
     "challenge.vulnBlurbId": "Ringkas untuk pemula; referensi ke materi umum (bukan mengikat).",
@@ -222,7 +226,7 @@ const M: Record<UiLang, Record<MessageId, string>> = {
       "Reset dicatat. Segarkan tab lab bila perlu. Riwayat reset tersimpan di server.",
     "challenge.hintsTitle": "Hint",
     "challenge.hintLockedHelp":
-      "Challenge masih terkunci (mode progres ketat atau belum memenuhi syarat). Buka challenge entry di kategori OWASP-nya, atau set CHALLENGE_UNLOCK_MODE=free di lingkungan dev agar semua challenge terbuka. Setelah terbuka, hint bertingkat bisa di-unlock di sini.",
+      "Challenge terkunci. Mode `catalog` hanya membuka kategori di `CHALLENGE_UNLOCK_CATEGORIES` (default A01,A02). Untuk buka semua di dev, set `CHALLENGE_UNLOCK_MODE=free`. Mode `strict` membuka entry per kategori secara berurutan.",
     "challenge.hintLoadError403": "Hint tidak tersedia (challenge terkunci).",
     "challenge.hintLoadError": "Gagal memuat hint ({{status}}).",
     "challenge.hintLoadErrorGeneric": "Gagal memuat hint.",
@@ -339,6 +343,8 @@ const M: Record<UiLang, Record<MessageId, string>> = {
     "dashboard.loadFailed": "Failed to load data",
     "dashboard.modulePercent": "{{pct}}% done",
     "dashboard.navAria": "Dashboard navigation",
+    "dashboard.challengeLockedCard": "Not available yet",
+    "dashboard.challengeLockedCardAria": "Challenge locked — this module is not available yet.",
     "challenge.backToList": "← Back to list",
     "challenge.vulnTitle": "What is this vulnerability?",
     "challenge.vulnBlurbId":
@@ -357,7 +363,7 @@ const M: Record<UiLang, Record<MessageId, string>> = {
       "Reset recorded. Refresh the lab tab if needed. Reset history is stored on the server.",
     "challenge.hintsTitle": "Hints",
     "challenge.hintLockedHelp":
-      "This challenge is still locked (strict progress or prerequisites). Open it from its OWASP category, or set CHALLENGE_UNLOCK_MODE=free in dev to unlock all. Tiered hints can be unlocked here once open.",
+      "This challenge is locked. In `catalog` mode only categories listed in `CHALLENGE_UNLOCK_CATEGORIES` (default A01,A02) are open. Set `CHALLENGE_UNLOCK_MODE=free` in dev to open everything. `Strict` mode opens the first challenge per category and chains on solve.",
     "challenge.hintLoadError403": "Hints unavailable (challenge locked).",
     "challenge.hintLoadError": "Failed to load hints ({{status}}).",
     "challenge.hintLoadErrorGeneric": "Failed to load hints.",

@@ -374,49 +374,84 @@ export function DashboardPage() {
                   className="h-[168px] animate-pulse rounded-2xl border border-white/10 bg-nawa-card/30"
                 />
               ))
-            : challenges.map((c) => (
-                <Link
-                  key={c.slug}
-                  to={`/challenges/${c.slug}`}
-                  className="group relative flex flex-col rounded-2xl border border-white/10 bg-gradient-to-br from-nawa-card/90 to-nawa-card/50 p-5 shadow-lg shadow-black/20 outline-none ring-offset-2 ring-offset-nawa-bg transition duration-200 hover:-translate-y-0.5 hover:border-nawa-accent/35 hover:shadow-xl hover:shadow-nawa-accent/10 focus-visible:ring-2 focus-visible:ring-nawa-accent"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <span
-                      className={`inline-flex shrink-0 rounded-md border px-2 py-0.5 font-mono text-[11px] font-semibold ${owaspChipClass(c.owaspCategory)}`}
-                    >
-                      {c.owaspCategory}
-                    </span>
-                    <span
-                      className={`shrink-0 rounded-md border px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wide ${difficultyChipClass(c.difficulty)}`}
-                    >
-                      {c.difficulty}
-                    </span>
-                  </div>
-                  <h3 className="mt-3 line-clamp-2 text-base font-semibold leading-snug text-white group-hover:text-nawa-accent">
-                    {title(lang)(c)}
-                  </h3>
-                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-400">
-                    {lang === "en" ? c.titleId : c.titleEn}
-                  </p>
-                  <div className="mt-auto flex items-center justify-between border-t border-white/5 pt-4">
-                    <span className="font-mono text-xs text-slate-400">
-                      <span className="text-slate-200">{c.pointsBase}</span> {t("common.points")}
-                    </span>
-                    <span className="flex items-center gap-1.5 font-mono text-[11px] text-slate-400">
-                      <span className={`h-1.5 w-1.5 rounded-full ${statusDotClass(c.status)}`} aria-hidden />
-                      <span className={c.status === "solved" ? "text-emerald-300" : c.status === "unlocked" ? "text-amber-200" : "text-slate-500"}>
-                        {statusLabel(c.status, t)}
+            : challenges.map((c) => {
+                const locked = c.status === "locked";
+                const cardInner = (
+                  <>
+                    <div className="flex items-start justify-between gap-2">
+                      <span
+                        className={`inline-flex shrink-0 rounded-md border px-2 py-0.5 font-mono text-[11px] font-semibold ${owaspChipClass(c.owaspCategory)}`}
+                      >
+                        {c.owaspCategory}
                       </span>
-                    </span>
-                  </div>
-                  <span
-                    className="pointer-events-none absolute right-3 top-3 text-slate-600 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100"
-                    aria-hidden
+                      <span
+                        className={`shrink-0 rounded-md border px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wide ${difficultyChipClass(c.difficulty)}`}
+                      >
+                        {c.difficulty}
+                      </span>
+                    </div>
+                    <h3
+                      className={`mt-3 line-clamp-2 text-base font-semibold leading-snug ${locked ? "text-slate-400" : "text-white group-hover:text-nawa-accent"}`}
+                    >
+                      {title(lang)(c)}
+                    </h3>
+                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">
+                      {lang === "en" ? c.titleId : c.titleEn}
+                    </p>
+                    <div className="mt-auto flex items-center justify-between border-t border-white/5 pt-4">
+                      <span className="font-mono text-xs text-slate-500">
+                        <span className="text-slate-300">{c.pointsBase}</span> {t("common.points")}
+                      </span>
+                      <span className="flex items-center gap-1.5 font-mono text-[11px] text-slate-400">
+                        <span className={`h-1.5 w-1.5 rounded-full ${statusDotClass(c.status)}`} aria-hidden />
+                        <span
+                          className={
+                            c.status === "solved"
+                              ? "text-emerald-300"
+                              : c.status === "unlocked"
+                                ? "text-amber-200"
+                                : "text-slate-500"
+                          }
+                        >
+                          {locked ? t("dashboard.challengeLockedCard") : statusLabel(c.status, t)}
+                        </span>
+                      </span>
+                    </div>
+                    {!locked ? (
+                      <span
+                        className="pointer-events-none absolute right-3 top-3 text-slate-600 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100"
+                        aria-hidden
+                      >
+                        →
+                      </span>
+                    ) : null}
+                  </>
+                );
+                const cardClass =
+                  "group relative flex flex-col rounded-2xl border p-5 shadow-lg shadow-black/20 outline-none ring-offset-2 ring-offset-nawa-bg transition duration-200 " +
+                  (locked
+                    ? "cursor-not-allowed border-white/5 bg-nawa-card/40 opacity-80"
+                    : "border-white/10 bg-gradient-to-br from-nawa-card/90 to-nawa-card/50 hover:-translate-y-0.5 hover:border-nawa-accent/35 hover:shadow-xl hover:shadow-nawa-accent/10 focus-visible:ring-2 focus-visible:ring-nawa-accent");
+
+                return locked ? (
+                  <div
+                    key={c.slug}
+                    className={cardClass}
+                    role="group"
+                    aria-label={t("dashboard.challengeLockedCardAria")}
                   >
-                    →
-                  </span>
-                </Link>
-              ))}
+                    {cardInner}
+                  </div>
+                ) : (
+                  <Link
+                    key={c.slug}
+                    to={`/challenges/${c.slug}`}
+                    className={cardClass}
+                  >
+                    {cardInner}
+                  </Link>
+                );
+              })}
         </div>
 
         {!isLoading && challenges.length === 0 ? (
